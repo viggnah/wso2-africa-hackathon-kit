@@ -33,7 +33,6 @@ plausible-but-wrong answer that costs the team an hour during a timed event.
 5. **Route LLM calls through the AI Gateway** from the start, not as an afterthought.
 6. **Distinguish GA from pre-GA.** Agent Manager is pre-GA (v0.18.x mid-2026) — don't present it as
    stable.
-7. **Never propose WSO2 BPS** (deprecated). Workflow/BPM goes to a third-party engine.
 
 ## Naming (use these exact strings; they're also your search terms)
 - **WSO2 API Platform** (GA Mar 2026) — not "API Manager" (that's now one mode of it).

@@ -163,7 +163,6 @@ if each product is doing real work in your flow.
   design for it early if you're going for bonus points.
 - **Assuming hybrid/cloud gateway works in your region.** Verify region availability; default to the
   standalone gateway for a clean local/on-prem run.
-- **Proposing WSO2 BPS** for workflow. It's deprecated — use a partner engine and integrate to it.
 
 ---
 

@@ -46,10 +46,6 @@ correct search terms for the docs:
 | **OpenChoreo** | "Choreo" (that's the SaaS; OpenChoreo is the OSS platform) | Kubernetes-native, open source. |
 | **Moesif** | "WSO2 Analytics", "DAS" | SaaS only. AI/API analytics + monetization. Acquired by WSO2 in 2025. |
 
-> **BPS is dead.** WSO2 Business Process Server is deprecated. If your design needs a workflow/BPM
-> engine, that is *out of WSO2 scope* — use a partner/3rd-party engine (e.g. Camunda) and integrate
-> to it. Do not propose WSO2 BPS.
-
 ---
 
 ## 2. What each product actually does (and when to reach for it)
@@ -246,6 +242,6 @@ These products are past your model's training cutoff. Enforce this behavior:
 
 ---
 
-*Assembled for the WSO2 Africa Hackathon. Product facts verified against WSO2 documentation and
+*Product facts verified against WSO2 documentation and
 release announcements current to mid-2026. Because these products move fast, re-verify version-gated
 details against the live docs linked above.*

@@ -34,11 +34,6 @@ Bonus points reward **meaningful** multi-product integration. For every WSO2 pro
 ask: *if I delete it, does my assistant still work?* If yes, it's decoration. Make it load-bearing or
 drop it. Two products doing real work beats five bolted on.
 
-## Deprecated — don't use
-
-**WSO2 BPS** is deprecated. If you need a workflow/BPM engine, integrate a third-party one; don't
-propose BPS.
-
 ---
 
 *Product facts current to mid-2026 and verified against WSO2 documentation. These products move fast
