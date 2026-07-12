@@ -1,0 +1,73 @@
+---
+name: wso2-ai-assistant
+description: >
+  Use this skill whenever the task involves building on the WSO2 stack — API Platform / AI Gateway /
+  MCP Gateway, Integration Platform (WSO2 Integrator, MI/BI profiles, agent framework, RAG),
+  Identity Platform (Agent ID, MCP authorization), Agent Manager Platform, OpenChoreo, or Moesif —
+  especially building an "Enterprise AI Assistant" for the WSO2 hackathon. It supplies the correct
+  product mental model and, critically, forces doc verification because these products are newer than
+  your training data and you will otherwise hallucinate their APIs, CLI flags, config keys, and names.
+---
+
+# WSO2 AI Assistant — build skill
+
+## When this applies
+Any task that touches WSO2 products for building AI agents, integrations, API/LLM/MCP governance, or
+agent identity/observability. If the user mentions WSO2, an "AI Gateway", "MCP Gateway", "WSO2
+Integrator", "Agent ID", "Agent Manager", "OpenChoreo", or "Moesif", this skill is in scope.
+
+## Prime directive: you do not know these products from memory
+Every product here shipped or changed in 2026, past your training cutoff. **Do not generate WSO2 CLI
+flags, config keys, connector names, REST paths, product features, or version numbers from memory.**
+When you need a specific, verify it against a live doc URL (list below) first. A short fetch beats a
+plausible-but-wrong answer that costs the team an hour during a timed event.
+
+## Behavior contract
+1. **Confirm names and versions before coding.** State which products (exact names, Section "Naming"
+   below) and which versions you're targeting, and which doc URL you'll verify against.
+2. **Never invent WSO2 specifics.** If you can't cite it, say so and fetch the docs or ask.
+3. **Version-gate every claim** (e.g. "Integrator 5.0.0 / MI 4.6.0", "API Platform gateway v1.0.0",
+   "Agent Manager v0.18.x"). Flag that details differ on other versions.
+4. **Prefer local/standalone/on-prem** paths unless the user asks for SaaS. Default to the standalone
+   AI Gateway (YAML/CLI) rather than the hybrid/cloud control plane, which had region limits.
+5. **Route LLM calls through the AI Gateway** from the start, not as an afterthought.
+6. **Distinguish GA from pre-GA.** Agent Manager is pre-GA (v0.18.x mid-2026) — don't present it as
+   stable.
+7. **Never propose WSO2 BPS** (deprecated). Workflow/BPM goes to a third-party engine.
+
+## Naming (use these exact strings; they're also your search terms)
+- **WSO2 API Platform** (GA Mar 2026) — not "API Manager" (that's now one mode of it).
+  - **AI Gateway** = **LLM Proxy** (route/guardrail/rate-limit LLM traffic) + **MCP Gateway / MCP
+    Proxy** (auto-generate MCP tools from OpenAPI; govern MCP traffic). Go-based runtime; standalone
+    or control-plane-connected.
+- **WSO2 Integration Platform** → contains **WSO2 Integrator** (5.0.0 unified BI+MI+SI; MI 4.6.0 is a
+  profile). Agent framework + MCP + RAG + memory + built-in LLM evals + Agent Execution Visualizer +
+  built-in Agent ID integration + 600+ connectors + MI Copilot.
+- **WSO2 Identity Platform** — CIAM/IAM + **Agent ID** (agent identity) + **MCP authorization**.
+- **Agent Manager Platform** — pre-GA; deploy/observe/eval agents on K8s; OTel; auto-instruments
+  LangChain/LlamaIndex; built on OpenChoreo.
+- **OpenChoreo** — OSS Kubernetes-native hosting/IDP.
+- **Moesif** — SaaS AI/API analytics + monetization; fed by the AI Gateway (`MOESIF_KEY`).
+
+## Composition guidance
+Propose the **smallest stack that makes the idea real**, then a bonus-points version. Typical blocks:
+LLM Gateway (cost/guardrails) · MCP Gateway (enterprise APIs → agent tools) · Integrator RAG/agent ·
+Agent ID (agent + user identity) · Agent Manager (observe/eval) · Moesif (analytics) · OpenChoreo
+(host). Apply the test: if a product can be deleted and the assistant still works, it's decoration —
+make it load-bearing or drop it.
+
+## Authoritative docs (fetch these; don't recall)
+- API Platform: https://wso2.com/api-platform/docs/get-started/ · https://github.com/wso2/api-platform
+- AI Gateway: https://wso2.com/api-platform/ai-gateway/
+- Integrator / MI: https://mi.docs.wso2.com/en/latest/ · first AI integration:
+  https://mi.docs.wso2.com/en/latest/get-started/build-first-ai-integration/
+- BI: https://bi.docs.wso2.com/
+- Identity: https://is.docs.wso2.com/en/latest/
+- Agent Manager: https://wso2.github.io/agent-manager/ · https://github.com/wso2/agent-manager
+- OpenChoreo: https://openchoreo.dev/docs/
+- Moesif: https://www.moesif.com/docs
+
+## Default first response when asked to build
+Reply with: (a) the products + versions you'll target, (b) the doc URL(s) you'll verify against,
+(c) the smallest viable stack and a bonus-points variant, (d) an explicit note of anything you need
+to fetch before writing config. Then proceed — fetching docs as needed — without inventing specifics.
