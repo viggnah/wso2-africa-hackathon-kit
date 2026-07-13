@@ -2,14 +2,14 @@
 
 Build an **Enterprise AI Assistant powered by WSO2**. This kit gets you productive fast, even if
 you've never touched a WSO2 product before, and is designed to work *with* AI coding tools (Claude,
-Cursor, Codex, etc.) rather than against them.
+Cursor, Codex, etc.).
 
 ## What's in here
 
 | File | For | Use it to |
 |---|---|---|
 | **`wso2-hackathon-context-pack.md`** | You **and** your AI tool | The master primer. Paste into your AI tool first. Product mental model, exact naming, what each product does, how they compose, and an anti-hallucination protocol. **Start here.** |
-| **`composition-patterns.md`** | You **and** your AI tool | Product-agnostic building blocks (A–G) showing how WSO2 products snap together, with an honest "delete-it test" for meaningful integration. No prescribed architecture, no fixed industry. |
+| **`composition-patterns.md`** | You **and** your AI tool | Product-agnostic building blocks (A–G) showing how WSO2 products snap together, with an honest "delete-it test" for meaningful integration. |
 | **`day-zero-quickstart.md`** | You | Get something running in the first hour. Local/on-prem-first, verified commands, version-pinned with "check the docs" guardrails. |
 | **`wso2-ai-assistant.skill.md`** | Your AI tool | Install as a skill/rules file in Claude/Cursor/etc. so the model loads the correct WSO2 mental model and fetches docs instead of inventing APIs. |
 

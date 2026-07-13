@@ -43,8 +43,7 @@ plausible-but-wrong answer that costs the team an hour during a timed event.
   profile). Agent framework + MCP + RAG + memory + built-in LLM evals + Agent Execution Visualizer +
   built-in Agent ID integration + 600+ connectors + MI Copilot.
 - **WSO2 Identity Platform** — CIAM/IAM + **Agent ID** (agent identity) + **MCP authorization**.
-- **Agent Manager Platform** — pre-GA; deploy/observe/eval agents on K8s; OTel; auto-instruments
-  LangChain/LlamaIndex; built on OpenChoreo.
+- **Agent Manager Platform** — pre-GA; deploy/observe/eval agents on K8s; OTel; auto-instruments; built on OpenChoreo.
 - **OpenChoreo** — OSS Kubernetes-native hosting/IDP.
 - **Moesif** — SaaS AI/API analytics + monetization; fed by the AI Gateway (`MOESIF_KEY`).
 

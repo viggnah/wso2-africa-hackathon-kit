@@ -17,7 +17,7 @@
 
 - **Docker + Docker Compose** — the shipping vehicle for most WSO2 components.
 - **Java 17+** — for JVM-based runtimes (Integrator profiles).
-- **VS Code** — plus the **WSO2 Integrator** extension if you'll build agents/integrations.
+- **WSO2 Integrator IDE** — if you'll build agents/integrations.
 - **Node.js 18+** and **Python 3.10+** — for your own agent/app code.
 - **An LLM provider API key** (OpenAI/Anthropic/Azure/Mistral/Bedrock) — you'll put it *behind* the
   AI Gateway, not in your agent code.
@@ -31,7 +31,7 @@ This is the **on-prem-friendly path**: no control-plane signup, configured by YA
 same Go-based gateway the cloud uses, just run independently. You can attach a control plane later.
 
 **Get the current version and commands from:**
-https://wso2.com/api-platform/docs/get-started/ (choose the *standalone gateway* / *AI gateway*
+https://wso2.com/api-platform/docs/get-started/ (choose the *standalone AI gateway*
 quick start) and https://github.com/wso2/api-platform (releases).
 
 The launch-era download looked like the following — **check the releases page for the current
@@ -48,10 +48,8 @@ You configure APIs, LLM providers, guardrails, and MCP tool generation via YAML/
 governance you point the LLM Proxy at your provider and give your agent the gateway's endpoint
 instead of the provider's. For MCP, you feed it an OpenAPI spec and it derives tools.
 
-> ⚠️ **Hybrid caveat.** The *hybrid* mode (standalone gateway + WSO2-hosted cloud control plane) was
-> documented as **US-region only** at launch, with the hybrid control plane being Bijira SaaS. If
-> you're in Africa and want the console UI, either use the SaaS control plane if region allows, or
-> stay standalone and drive everything by YAML/CLI locally. Verify current region support in the docs.
+> ⚠️ **Hybrid.** For the *hybrid* mode (standalone gateway + WSO2-hosted cloud control plane) use the SaaS control plane, or
+> stay standalone and drive everything by YAML/CLI locally.
 
 > **To emit analytics to Moesif** (optional, Pattern F): the gateway config takes a `MOESIF_KEY`
 > environment variable. Get the key from your Moesif account.
@@ -60,7 +58,7 @@ instead of the provider's. For MCP, you feed it an OpenAPI spec and it derives t
 
 ## 2. WSO2 Integrator — build the agent / RAG / integrations
 
-The fastest dev loop is **VS Code + the WSO2 Integrator extension** (gives you the MI profile, agent
+The fastest dev loop is **WSO2 Integrator IDE** (gives you the agent
 framework, RAG, and MI Copilot). Install steps and the "build your first AI integration" tutorial
 (chatbot → knowledge base → RAG → agent) are here:
 
@@ -68,11 +66,8 @@ framework, RAG, and MI Copilot). Install steps and the "build your first AI inte
 - First AI integration (start here for a RAG agent): https://mi.docs.wso2.com/en/latest/get-started/build-first-ai-integration/
 
 For on-prem/container deployment of the runtime, follow the deployment section of the Integrator
-docs (Docker/Kubernetes). For the hackathon, developing in VS Code and running the runtime locally is
+docs (Docker/Kubernetes). For the hackathon, developing in WSO2 Integrator IDE and running the runtime locally is
 the quickest.
-
-> **Naming note:** docs may say "WSO2 Integrator: MI 4.6.0" — that's the MI *profile* of the unified
-> WSO2 Integrator 5.0.0. Expected, not a mismatch.
 
 ---
 
@@ -105,9 +100,7 @@ docker run --rm -it --name amp-quick-start \
 - Quick start: https://wso2.github.io/agent-manager/ (see Getting Started → Quick Start / on K3D)
 - There's also a hosted console: https://console.agent-manager.cloud.wso2.com/
 
-> ⚠️ **Pre-GA.** Expect the version and commands to change between now and the event. Auto-
-> instrumentation targets LangChain/LlamaIndex — if you built your agent in one of those, this is
-> your easiest observability win.
+> ⚠️ **Pre-GA.** Expect the version and commands to change between now and the event.
 
 ---
 

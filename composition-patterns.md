@@ -90,7 +90,7 @@ is it allowed." Agent ID makes it standard identity.
 ## Pattern E — "Watch and grade": observability + evals
 
 **The shape.** Run/observe your agent through the **Agent Manager Platform**: OpenTelemetry traces,
-metrics, and logs; zero-code auto-instrumentation for LangChain/LlamaIndex; and **evals** (assertions
+metrics, and logs; auto-instrumentation; and **evals** (assertions
 or LLM-as-judge) to check the agent behaves. WSO2 Integrator also has a built-in LLM evaluation
 framework and an Agent Execution Visualizer.
 
@@ -137,7 +137,7 @@ which blocks you pick.
 
 **Tier 1 — Real and focused (2 products).**
 Pattern C (RAG agent in Integrator) + Pattern A (LLM Gateway). A grounded assistant with cost control
-and guardrails. Fully local, no SaaS required. A complete, defensible submission.
+and guardrails. Fully local, no SaaS required.
 
 **Tier 2 — Acts on the world (3 products).**
 Add Pattern B (MCP tools from your APIs). Now the assistant *does* things against real systems, with
@@ -151,18 +151,6 @@ if each product is doing real work in your flow.
 > **The judging test to apply to yourself:** for every WSO2 product in your diagram, can you delete
 > it and have your assistant still work? If yes, it's decoration — either make it load-bearing or
 > drop it. Judges reward *meaningful* integration, not logo count.
-
----
-
-## Common wiring mistakes to avoid
-
-- **Calling LLMs directly "just for the demo"** and bolting the gateway on later — you lose the whole
-  point of Pattern A and it rarely gets reconnected. Route through the gateway from hour one.
-- **Hand-writing an MCP server** when the MCP Gateway can generate one from your OpenAPI spec.
-- **Treating Agent ID as an afterthought.** The agent-identity governance story is a differentiator;
-  design for it early if you're going for bonus points.
-- **Assuming hybrid/cloud gateway works in your region.** Verify region availability; default to the
-  standalone gateway for a clean local/on-prem run.
 
 ---
 

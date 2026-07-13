@@ -40,8 +40,8 @@ correct search terms for the docs:
 | **AI Gateway** (part of API Platform) | "AI Manager" | Two halves: **LLM Proxy** + **MCP Proxy/Gateway**. |
 | **MCP Gateway** / **MCP Proxy** | "MCP server manager" | Turns REST APIs into MCP tools; governs MCP traffic. |
 | **WSO2 Integration Platform** | "EI", "ESB" | Contains **WSO2 Integrator** (unified runtime). |
-| **WSO2 Integrator** | "MI" alone, "BI" alone | 5.0.0 (H1 2026) **unified BI + MI + SI into one product**. MI 4.6.0 is a profile inside it. |
-| **WSO2 Identity Platform** | "IS" alone, "WSO2 Identity Server" only | Includes **Agent ID** for agent identity. |
+| **WSO2 Integrator** | "MI" alone, "BI" alone | 5.0.0 (H1 2026) **unified BI + MI into one product**. |
+| **WSO2 Identity Platform/Server** | "IS" alone | Includes **Agent ID** for agent identity. |
 | **Agent Manager Platform** | "Choreo agents" | Pre-GA (v0.18.x as of mid-2026). Built on OpenChoreo. |
 | **OpenChoreo** | "Choreo" (that's the SaaS; OpenChoreo is the OSS platform) | Kubernetes-native, open source. |
 | **Moesif** | "WSO2 Analytics", "DAS" | SaaS only. AI/API analytics + monetization. Acquired by WSO2 in 2025. |
@@ -51,7 +51,7 @@ correct search terms for the docs:
 ## 2. What each product actually does (and when to reach for it)
 
 ### 2.1 WSO2 API Platform — *govern and expose APIs, LLMs, and agent tools*
-- **The core idea:** one control plane for traditional APIs **and** AI assets (LLM models, prompts,
+- **The core idea:** one control plane for traditional APIs **and** AI assets (LLM models,
   MCP servers).
 - **AI Gateway** has two capabilities you will actually use:
   - **LLM Proxy (LLM Gateway):** a single endpoint in front of OpenAI, Anthropic, Azure OpenAI,
@@ -63,51 +63,43 @@ correct search terms for the docs:
     full audit trail — without you hand-writing an MCP server. Also governs *third-party* MCP servers.
 - **Gateway runtime:** Go-based, single binary/container. Runs **standalone** (YAML/CLI/REST, no UI,
   fully local — *this is your on-prem-friendly, no-signup path*) or **connected to a control plane**
-  (web UI).
+  (web UI, https://console.bijira.dev/login).
 - **Reach for it when:** your assistant calls LLMs (you want cost control + guardrails), OR your
   assistant needs to safely call enterprise APIs as tools (MCP), OR you want one audited entry point
   for all AI traffic.
 - **Docs:** https://wso2.com/api-platform/docs/ · GitHub: https://github.com/wso2/api-platform
 
-> ⚠️ **Deployment caveat (verify live):** The **hybrid / self-hosted gateway connected to the cloud
-> control plane** was documented as **US-region only** at launch, and the hybrid control plane is the
-> Bijira SaaS. For a clean, region-independent, on-prem experience, prefer the **standalone gateway**
-> (configured by YAML/CLI). Confirm current region availability in the docs before relying on hybrid.
-
 ### 2.2 WSO2 Integration Platform (WSO2 Integrator) — *build agents, RAG, and integrations*
 - **The core idea:** low-code **and** pro-code environment (100% parity) to build integrations and
   **AI agents** directly inside integration flows.
-- **5.0.0 (H1 2026) unified BI, MI, and SI into one "WSO2 Integrator."** You'll still see the **MI
-  profile** (WSO2 Integrator: MI 4.6.0) referenced in docs — that's expected.
+- **5.0.0 (H1 2026) unified BI and MI into one "WSO2 Integrator."**
 - **AI capabilities you get out of the box:**
   - **Agent framework** with **MCP support**, persistent memory, summarizing/trimming, and RAG.
-  - **RAG**: knowledge bases + vector DBs (Weaviate, Milvus, Pinecone in various profiles/tutorials),
+  - **RAG**: knowledge bases + vector DBs (Weaviate, Milvus, Pinecone, pgvector in various profiles/tutorials),
     embedding models, "RAG Chat" mediator.
   - **Built-in LLM evaluation framework** (collect traces → build datasets → assertions or
     LLM-as-judge) and an **Agent Execution Visualizer** to see which tools an agent called and why.
   - **Built-in Agent ID integration** for agent identity/access, enforced at tool-execution time.
   - **600+ connectors** to SaaS, DBs, messaging, and AI.
-  - **MI Copilot** / Agent mode: describe a requirement in natural language, it scaffolds the project.
+  - **Copilot** / Agent mode: describe a requirement in natural language, it scaffolds the project.
 - **Reach for it when:** you are actually *building the agent* / orchestration / RAG pipeline, or
   connecting to enterprise systems (DBs, SaaS, legacy SOAP, files, events).
-- **Deploy:** on-prem via containers (preferred for this hackathon) or SaaS. Dev in VS Code with the
-  WSO2 Integrator extension.
-- **Docs:** https://wso2.com/integration-platform/docs/ · MI: https://mi.docs.wso2.com/en/latest/
-  · BI: https://bi.docs.wso2.com/
+- **Deploy:** on-prem via containers or SaaS. Develop in WSO2 Integrator IDE (https://wso2.com/products/downloads/?product=wso2integrator).
+- **Docs:** https://wso2.com/integration-platform/docs/
 
 ### 2.3 WSO2 Identity Platform — *identity for humans and agents*
 - **The core idea:** CIAM + workforce IAM (OAuth2/OIDC/SAML, MFA, adaptive auth, federation) **plus
   Agent ID** — first-class identity for AI agents so you can authorize *what an agent is allowed to
   do*, and **MCP authorization** so tool calls carry real, verifiable identity.
 - **Reach for it when:** your assistant acts on behalf of a user (login, consent, scopes), or your
-  agent needs its own identity to be governed (which is the interesting, points-scoring case here).
+  agent needs its own identity to be governed.
 - **Deploy:** on-prem cleanly. Latest IS docs: https://is.docs.wso2.com/en/latest/
 
 ### 2.4 Agent Manager Platform — *run, observe, evaluate, secure agents at scale*
 - **The core idea:** an open control plane to **deploy agents on Kubernetes**, get **full-stack
   observability** (OpenTelemetry traces/metrics/logs), enforce **governance**, and do **evals** —
   for both internally hosted and externally deployed agents.
-- **Auto-instrumentation** (zero-code) for **LangChain, LlamaIndex**, and more.
+- **Auto-instrumentation** (zero-code / some manual code).
 - **Built on OpenChoreo.** **Pre-GA (v0.18.x mid-2026).** SaaS console exists; on-prem quick-start
   is a Docker dev container.
 - **Reach for it when:** you want to *host + observe + evaluate* your agent as a bonus-points play,
@@ -172,7 +164,7 @@ you compose deliberately, not randomly. Full patterns are in `composition-patter
 ```
 
 **Minimum interesting stack (2 products):** Integrator (build the agent + RAG) + API Platform AI
-Gateway (govern LLM + expose enterprise APIs as MCP tools). This alone is a strong submission.
+Gateway (govern LLM + expose enterprise APIs as MCP tools).
 
 **Bonus-points stack (4–5 products):** add Identity Platform (Agent ID + user login) + Agent Manager
 (host/observe/eval) + Moesif (cost dashboards). Only add a product if it does real work — judges can
@@ -206,19 +198,18 @@ These products are past your model's training cutoff. Enforce this behavior:
 **API Platform**
 - Overview & get-started: https://wso2.com/api-platform/docs/get-started/
 - AI Gateway: https://wso2.com/api-platform/ai-gateway/
-- Standalone gateway getting-started: https://wso2.com/api-platform/docs/api-platform-gateway/getting-started/
+- Standalone gateway getting-started: https://wso2.com/api-platform/docs/api-gateway/1.1.0/quick-start-guide/
+- MCP Gateway get-started: https://wso2.com/api-platform/docs/ai-gateway/1.1.0/mcp-proxy/quick-start-guide/
 - GitHub: https://github.com/wso2/api-platform
-- MCP Gateway explainer: https://wso2.com/library/blogs/unified-governance-wso2-mcp-gateway/
 
 **Integration Platform / WSO2 Integrator**
 - Docs home: https://wso2.com/integration-platform/docs/
-- MI (latest): https://mi.docs.wso2.com/en/latest/
-- Build first AI integration (chatbot → KB → RAG → agent): https://mi.docs.wso2.com/en/latest/get-started/build-first-ai-integration/
-- BI: https://bi.docs.wso2.com/
+- Build first AI integration (chatbot → KB → RAG → agent): https://wso2.com/integration-platform/docs/genai/tutorials/it-helpdesk-chatbot
 - 5.0.0 release notes: https://wso2.com/library/blogs/wso2-integrator-5-0-0-release/
 
 **Identity Platform**
 - IS (latest): https://is.docs.wso2.com/en/latest/
+- Agent ID example: https://is.docs.wso2.com/en/latest/quick-starts/agent-auth-py/
 
 **Agent Manager Platform** (pre-GA)
 - Docs: https://wso2.github.io/agent-manager/ · GitHub: https://github.com/wso2/agent-manager
