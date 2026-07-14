@@ -42,9 +42,11 @@ plausible-but-wrong answer that costs the team an hour during a timed event.
 
 ## Naming (use these exact strings; they're also your search terms)
 - **WSO2 API Platform** (GA Mar 2026) — not "API Manager" (that's now one mode of it).
-  - **AI Gateway** = **LLM Proxy** (route/guardrail/rate-limit LLM traffic) + **MCP Gateway / MCP
-    Proxy** (auto-generate MCP tools from OpenAPI; govern MCP traffic). Go-based runtime; standalone
-    or control-plane-connected.
+  - **AI Gateway** = **LLM Proxy** (route/guardrail/rate-limit LLM traffic) + **MCP Gateway**. The
+    **MCP Gateway** onboards MCP servers 3 ways: generate one from a REST API / OpenAPI definition
+    (auto-derives tools), generate from an existing API, or **proxy an existing/remote MCP server**.
+    ⚠️ **"MCP Proxy" = only that last mode** (fronting an existing MCP server) — do NOT call the
+    OpenAPI→MCP generation "MCP Proxy". Go-based runtime; standalone or control-plane-connected.
 - **WSO2 Integration Platform** → contains **WSO2 Integrator** (5.0.0 unified BI+MI+SI). **Default
   profile runs on Ballerina** (encouraged path, what the GenAI docs use); the **MI profile** still
   exists but is not the default — build AI/agent work against the GenAI docs, not MI-only docs. Agent

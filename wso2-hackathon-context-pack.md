@@ -39,8 +39,9 @@ correct search terms for the docs:
 | Correct current name | Do NOT call it | Notes |
 |---|---|---|
 | **WSO2 API Platform** | "WSO2 API Manager" (that's now one deployment mode of it) | GA March 2026. Modular. |
-| **AI Gateway** (part of API Platform) | "AI Manager" | Two halves: **LLM Proxy** + **MCP Proxy/Gateway**. |
-| **MCP Gateway** / **MCP Proxy** | "MCP server manager" | Turns REST APIs into MCP tools; governs MCP traffic. |
+| **AI Gateway** (part of API Platform) | "AI Manager" | Two halves: **LLM Proxy** + **MCP Gateway** (see the two rows below — "MCP Proxy" is only one mode of the MCP Gateway). |
+| **MCP Gateway** | "MCP server manager" | Umbrella capability. Onboards MCP servers 3 ways: **generate from a REST API / OpenAPI definition** (auto-derives tools), **generate from an existing API**, or **proxy an existing/remote MCP server**. Governs MCP traffic. |
+| **MCP Proxy** | the whole MCP Gateway; the OpenAPI→MCP generator | **Specifically the "proxy an existing/remote MCP server" mode** — NOT the OpenAPI-to-MCP generation. Don't conflate the two. |
 | **WSO2 Integration Platform** | "EI", "ESB" | Contains **WSO2 Integrator** (unified runtime). |
 | **WSO2 Integrator** | "MI" alone, "BI" alone | 5.0.0 (H1 2026) **unified BI + MI into one product**. **Default profile runs on Ballerina**; the MI profile still exists but is not the encouraged path. |
 | **WSO2 Identity Platform/Server** | "IS" alone | Includes **Agent ID** for agent identity. |
@@ -60,9 +61,13 @@ correct search terms for the docs:
     Mistral, AWS Bedrock. Gives you **multi-provider routing/failover, token-based rate limiting,
     semantic caching, and guardrails** (PII masking, prompt-injection protection, content safety).
     This is how you stop one runaway agent from burning your whole token budget.
-  - **MCP Gateway (MCP Proxy):** **auto-generates an MCP server from any REST API's OpenAPI spec**,
-    so an agent can call your existing enterprise APIs as MCP tools — with auth, rate limits, and a
-    full audit trail — without you hand-writing an MCP server. Also governs *third-party* MCP servers.
+  - **MCP Gateway:** onboards MCP servers three ways — (1) **generate one from a REST API / OpenAPI
+    definition** (auto-derives the tool schemas; no hand-written MCP server), (2) **generate one from an
+    existing API** already in the platform, or (3) **proxy an existing/remote MCP server** — and *this
+    third mode is what "**MCP Proxy**" means*. All modes get auth, rate limits, and a full audit trail,
+    so an agent can call your enterprise APIs (or a governed third-party MCP server) as tools safely.
+    ⚠️ Don't call the OpenAPI-to-MCP generation "MCP Proxy" — the Proxy specifically fronts an *existing*
+    MCP server.
 - **Gateway runtime:** Go-based, single binary/container. Runs **standalone** (YAML/CLI/REST, no UI,
   fully local — *this is your on-prem-friendly, no-signup path*) or **connected to a control plane**
   (web UI, https://console.bijira.dev/login).
@@ -155,8 +160,8 @@ you compose deliberately, not randomly.
                             │ LLM calls                      │ tool calls (MCP)
               ┌─────────────▼────────────┐      ┌────────────▼─────────────────┐
               │  API Platform AI Gateway  │      │  API Platform MCP Gateway     │
-              │  (LLM Proxy): routing,    │      │  (MCP Proxy): REST→MCP tools, │
-              │  guardrails, token limits │      │  auth, audit                  │
+              │  (LLM Proxy): routing,    │      │  REST/OpenAPI→MCP tools, or   │
+              │  guardrails, token limits │      │  proxy existing; auth, audit  │
               └─────────────┬────────────┘      └────────────┬─────────────────┘
                             │                                │
                    ┌────────▼─────────┐            ┌─────────▼──────────┐
@@ -185,9 +190,12 @@ writing your own retry/failover, a token accountant, a cache layer, and prompt/r
 provider. The gateway makes it config.
 
 **Pattern B — "Hands": enterprise APIs → MCP tools.**
-The **MCP Gateway auto-generates MCP tools from your REST APIs' OpenAPI specs**; your agent discovers and
-calls those tools over MCP — with auth, rate limits, and an audit trail — without you writing an MCP
-server. *Buys you:* the agent can *act* against real systems, every action authenticated and logged. This
+The **MCP Gateway** turns your systems into agent-callable tools two ways: **generate an MCP server from a
+REST API's OpenAPI definition** (or from an existing API in the platform) — it auto-derives the tools, no
+hand-written server — or, if a system *already* exposes an MCP server, **proxy that existing/remote MCP
+server** (the *MCP Proxy* mode). Either way your agent discovers and calls the tools over MCP — with auth,
+rate limits, and an audit trail. *Buys you:* the agent can *act* against real systems, every action
+authenticated and logged. This
 is the difference between a chatbot that talks and an assistant that does things. *Products:* API Platform
 (MCP Gateway); pairs naturally with Pattern A (LLM decides, MCP acts). *DIY vs. WSO2:* DIY means
 hand-writing and hosting an MCP server per API plus your own authz/throttling/logging on tool calls.
