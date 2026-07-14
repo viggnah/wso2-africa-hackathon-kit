@@ -14,7 +14,8 @@
 > **How to use it.** Paste this whole file into your AI tool first — it contains everything: the
 > mental model, exact naming, per-product guidance, composition patterns, setup commands, a links
 > index, and an anti-hallucination protocol. If your tool supports skills/rules files, also install
-> `wso2-ai-assistant.skill.md`. The `README.md` is the human-readable companion to this file.
+> the skill file (`.claude/skills/wso2-ai-assistant/SKILL.md`; see the README for per-tool install). The
+> `README.md` is the human-readable companion to this file.
 
 ---
 

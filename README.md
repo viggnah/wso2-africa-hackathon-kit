@@ -15,7 +15,7 @@ your AI tool and start building.
 |---|---|---|
 | **This README** | You | The map and human-readable overview: product tour, how the pieces fit, first-hour setup, what judges reward. **Start here.** |
 | **`wso2-hackathon-context-pack.md`** | You **and** your AI tool | The master primer. **Paste it into your AI tool first.** Mental model, exact naming, per-product detail, 7 composition patterns, setup commands, links index, and an anti-hallucination protocol. |
-| **`wso2-ai-assistant.skill.md`** | Your AI tool | Install as a skill/rules file (Claude/Cursor/Codex/etc.) so the model loads the correct WSO2 mental model and fetches docs instead of inventing APIs. |
+| **Skill file** — `.claude/skills/wso2-ai-assistant/SKILL.md` | Your AI tool | Install as a skill/rules file so the model loads the correct WSO2 mental model and fetches docs instead of inventing APIs. **Install per tool** — see the note below. |
 
 ## A stack for the agentic enterprise
 
@@ -54,9 +54,14 @@ deliberately **no single reference architecture and no worked industry example**
 Most teams will build with AI assistants, and there's a catch: **every WSO2 product here is newer than the
 training data of every current AI model.** Left alone, your model will confidently invent WSO2 commands,
 config keys, and product names that don't exist. To counter that: **paste `wso2-hackathon-context-pack.md`**
-into your tool at the start of a session, and if it supports skills/rules files, also install
-**`wso2-ai-assistant.skill.md`**. Both carry one rule — *when unsure about a WSO2 specific, fetch the docs
-rather than invent.* Trust the linked docs over any model's memory, including the one you're using now.
+into your tool at the start of a session, and if it supports skills/rules files, also install the **skill
+file**. Both carry one rule — *when unsure about a WSO2 specific, fetch the docs rather than invent.* Trust
+the linked docs over any model's memory, including the one you're using now.
+
+**Install the skill file per tool** (no universal location — each tool reads its own):
+- **Claude Code** — `.claude/skills/wso2-ai-assistant/SKILL.md` (already here; copy the folder into your project's `.claude/`). Loads automatically.
+- **Cursor** — copy its contents to `.cursor/rules/wso2-ai-assistant.mdc`.
+- **Codex / others** — paste its contents into `AGENTS.md`.
 
 ## The 3-step start
 
