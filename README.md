@@ -58,10 +58,9 @@ into your tool at the start of a session, and if it supports skills/rules files,
 file**. Both carry one rule — *when unsure about a WSO2 specific, fetch the docs rather than invent.* Trust
 the linked docs over any model's memory, including the one you're using now.
 
-**Install the skill file per tool** (no universal location — each tool reads its own):
-- **Claude Code** — `.claude/skills/wso2-ai-assistant/SKILL.md` (already here; copy the folder into your project's `.claude/`). Loads automatically.
-- **Cursor** — copy its contents to `.cursor/rules/wso2-ai-assistant.mdc`.
-- **Codex / others** — paste its contents into `AGENTS.md`.
+**Install the skill by copying the folder**:
+- **Claude Code** — `.claude/skills/wso2-ai-assistant/SKILL.md`.
+- **Cursor / Codex / others** — `./agents/skills/wso2-ai-assistant/SKILL.md`.
 
 ## The 3-step start
 
@@ -71,8 +70,8 @@ the linked docs over any model's memory, including the one you're using now.
 
 ## Setup — the first hour
 
-A **menu, not a golden path** — do only what your idea needs. **On-prem/standalone and SaaS/cloud both
-work; pick by your machine's resources.** Commands are pinned to mid-2026 releases — if a URL 404s, get the
+Do only what your idea needs. **On-prem/standalone and SaaS/cloud both
+work.** Commands are pinned to mid-2026 releases — if a URL 404s, get the
 current version from the docs, don't guess. (The same commands live in the context pack so your AI tool can
 run them with you.)
 
@@ -83,7 +82,7 @@ gateway, not in your agent code.
 **1. AI Gateway (API Platform) — LLM + MCP governance.** Standalone (YAML/CLI, simplest local) or
 control-plane-connected (web UI). Confirm the current version on the
 [releases page](https://github.com/wso2/api-platform) and follow
-[get-started](https://wso2.com/api-platform/docs/get-started/) (*standalone AI gateway* quick start):
+[get-started](https://wso2.com/api-platform/docs/ai-gateway/1.1.0/overview/) (*standalone AI gateway* quick start):
 
 ```bash
 # Illustrative — confirm the current version tag on the releases page first.
@@ -91,22 +90,19 @@ curl -sLO https://github.com/wso2/api-platform/releases/download/gateway/v1.0.0/
 unzip wso2apip-api-gateway-1.0.0.zip && cd wso2apip-api-gateway-1.0.0
 ```
 
-Point the LLM Proxy at your provider and give your agent the gateway's endpoint. Feed MCP an OpenAPI spec
-and it derives tools. Set `MOESIF_KEY` in the config to emit analytics to Moesif.
+Point the LLM Proxy at your provider and give your agent the gateway's endpoint. Proxy MCP servers. Set `MOESIF_KEY` in the config to emit analytics to Moesif.
 
 **2. WSO2 Integrator — agent / RAG / integrations.** Use the WSO2 Integrator IDE on the **Ballerina default
-profile**, and start from the GenAI docs (not MI-only docs):
+profile**, and start from the GenAI docs:
 [docs home](https://wso2.com/integration-platform/docs/) ·
 [GenAI overview](https://wso2.com/integration-platform/docs/genai/overview) ·
 [first AI integration tutorial](https://wso2.com/integration-platform/docs/genai/tutorials/it-helpdesk-chatbot).
 
 **3. Identity Platform — login + Agent ID.** On-prem (self-managed Identity Server) or SaaS. Configure an
 OAuth2/OIDC app for login; look for **Agent ID** and **MCP authorization**. Add only if identity is part of
-your idea. [Platform docs](https://wso2.com/identity-platform/docs/) ·
-[IS docs](https://is.docs.wso2.com/en/latest/).
+your idea. [IS docs](https://is.docs.wso2.com/en/latest/) · [Platform docs](https://wso2.com/identity-platform/docs/).
 
-**4. Agent Manager Platform (pre-GA) — host / observe / eval.** Docker dev container (check the docs for the
-current tag):
+**4. Agent Manager Platform (pre-GA) — host / observe / eval.** Docker dev container (check the docs for the current tag):
 
 ```bash
 # Illustrative — confirm current version at the docs link before running.
@@ -119,15 +115,15 @@ docker run --rm -it --name amp-quick-start \
 [Quick start](https://wso2.github.io/agent-manager/) ·
 [hosted console](https://console.agent-manager.cloud.wso2.com/). ⚠️ Pre-GA — expect changes.
 
-**5. OpenChoreo (optional) — K8s hosting.** [Docs](https://openchoreo.dev/docs/). Needs a local Kubernetes
+**5. OpenChoreo — K8s hosting.** [Docs](https://openchoreo.dev/docs/). Needs a local Kubernetes
 (k3d/kind/minikube) or a cluster.
 
-**6. Moesif (optional, SaaS) — analytics.** Sign up, set `MOESIF_KEY` in the gateway config (step 1).
+**6. Moesif — analytics.** Sign up, set `MOESIF_KEY` in the gateway config (step 1). [AI Gateway Analytics](https://wso2.com/api-platform/docs/ai-gateway/1.1.0/analytics/moesif-analytics/) · 
 [Docs](https://www.moesif.com/docs).
 
 **First-hour sequence:** decide your 2–4 products → stand up the gateway and get one LLM call flowing
 *through* it → build a minimal agent (in Integrator, or wire your own LangChain/LlamaIndex to the gateway)
-→ add one real capability (RAG or an MCP tool from a mock OpenAPI spec) → only then identity, observability,
+→ add one real capability (RAG or an MCP tool) → then identity, observability,
 analytics, hosting.
 
 **When it breaks:** a 404 means the version moved (use the current tag, never hand-edit a URL); a flag that

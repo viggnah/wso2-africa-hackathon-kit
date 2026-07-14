@@ -44,7 +44,7 @@ correct search terms for the docs:
 | **MCP Proxy** | the whole MCP Gateway; the OpenAPI→MCP generator | **Specifically the "proxy an existing/remote MCP server" mode** — NOT the OpenAPI-to-MCP generation. Don't conflate the two. |
 | **WSO2 Integration Platform** | "EI", "ESB" | Contains **WSO2 Integrator** (unified runtime). |
 | **WSO2 Integrator** | "MI" alone, "BI" alone | 5.0.0 (H1 2026) **unified BI + MI into one product**. **Default profile runs on Ballerina**; the MI profile still exists but is not the encouraged path. |
-| **WSO2 Identity Platform/Server** | "IS" alone | Includes **Agent ID** for agent identity. |
+| **WSO2 Identity Platform/Server** | "IS" alone, "Asgardeo" | Includes **Agent ID** for agent identity. |
 | **Agent Manager Platform** | "Choreo agents" | Pre-GA (v0.18.x as of mid-2026). Built on OpenChoreo. |
 | **OpenChoreo** | "Choreo" (that's the SaaS; OpenChoreo is the OSS platform) | Kubernetes-native, open source. |
 | **Moesif** | "WSO2 Analytics", "DAS" | SaaS only. AI/API analytics + monetization. Acquired by WSO2 in 2025. |

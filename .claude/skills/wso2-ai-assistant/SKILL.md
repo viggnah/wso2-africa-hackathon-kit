@@ -34,11 +34,9 @@ plausible-but-wrong answer that costs the team an hour during a timed event.
    "Agent Manager v0.18.x"). Flag that details differ on other versions.
 4. **On-prem/standalone and SaaS/cloud are both valid** — choose by the team's machine resources
    (standalone for full control and no signup; SaaS/cloud if resource-constrained). The standalone AI
-   Gateway (YAML/CLI) is the simplest local start; note the hybrid/cloud gateway had regional limits at
-   launch, so verify availability before relying on it.
+   Gateway (YAML/CLI) is the simplest local start.
 5. **Route LLM calls through the AI Gateway** from the start, not as an afterthought.
-6. **Distinguish GA from pre-GA.** Agent Manager is pre-GA (v0.18.x mid-2026) — don't present it as
-   stable.
+6. **Distinguish GA from pre-GA.** Agent Manager is pre-GA (v0.18.x mid-2026).
 
 ## Naming (use these exact strings; they're also your search terms)
 - **WSO2 API Platform** (GA Mar 2026) — not "API Manager" (that's now one mode of it).
@@ -47,7 +45,7 @@ plausible-but-wrong answer that costs the team an hour during a timed event.
     (auto-derives tools), generate from an existing API, or **proxy an existing/remote MCP server**.
     ⚠️ **"MCP Proxy" = only that last mode** (fronting an existing MCP server) — do NOT call the
     OpenAPI→MCP generation "MCP Proxy". Go-based runtime; standalone or control-plane-connected.
-- **WSO2 Integration Platform** → contains **WSO2 Integrator** (5.0.0 unified BI+MI+SI). **Default
+- **WSO2 Integration Platform** → contains **WSO2 Integrator** (5.0.0 unified BI+MI). **Default
   profile runs on Ballerina** (encouraged path, what the GenAI docs use); the **MI profile** still
   exists but is not the default — build AI/agent work against the GenAI docs, not MI-only docs. Agent
   framework + MCP + RAG + memory + built-in LLM evals + Agent Execution Visualizer + built-in Agent ID
@@ -55,7 +53,7 @@ plausible-but-wrong answer that costs the team an hour during a timed event.
 - **WSO2 Identity Platform** — CIAM/IAM + **Agent ID** (agent identity) + **MCP authorization**.
 - **Agent Manager Platform** — pre-GA; deploy/observe/eval agents on K8s; OTel; auto-instruments; built on OpenChoreo.
 - **OpenChoreo** — OSS Kubernetes-native hosting/IDP.
-- **Moesif** — SaaS AI/API analytics + monetization; fed by the AI Gateway (`MOESIF_KEY`).
+- **Moesif** — SaaS AI/API analytics + monetization; fed by the AI Gateway and Integration Platform (`MOESIF_KEY`).
 
 ## Composition guidance
 Propose the **smallest stack that makes the idea real**, then a bonus-points version. Typical blocks:
