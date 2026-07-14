@@ -11,9 +11,10 @@
 > tells it **when to stop guessing and go read the live docs.** Treat the linked docs as ground
 > truth; treat this pack as the map.
 >
-> **How to use it.** Paste this whole file in first. Then paste `composition-patterns.md` if you
-> want integration patterns, and follow `day-zero-quickstart.md` to get something running. If your
-> tool supports skills/rules files, also install `wso2-ai-assistant.skill.md`.
+> **How to use it.** Paste this whole file into your AI tool first — it contains everything: the
+> mental model, exact naming, per-product guidance, composition patterns, setup commands, a links
+> index, and an anti-hallucination protocol. If your tool supports skills/rules files, also install
+> `wso2-ai-assistant.skill.md`. The `README.md` is the human-readable companion to this file.
 
 ---
 
@@ -40,7 +41,7 @@ correct search terms for the docs:
 | **AI Gateway** (part of API Platform) | "AI Manager" | Two halves: **LLM Proxy** + **MCP Proxy/Gateway**. |
 | **MCP Gateway** / **MCP Proxy** | "MCP server manager" | Turns REST APIs into MCP tools; governs MCP traffic. |
 | **WSO2 Integration Platform** | "EI", "ESB" | Contains **WSO2 Integrator** (unified runtime). |
-| **WSO2 Integrator** | "MI" alone, "BI" alone | 5.0.0 (H1 2026) **unified BI + MI into one product**. |
+| **WSO2 Integrator** | "MI" alone, "BI" alone | 5.0.0 (H1 2026) **unified BI + MI into one product**. **Default profile runs on Ballerina**; the MI profile still exists but is not the encouraged path. |
 | **WSO2 Identity Platform/Server** | "IS" alone | Includes **Agent ID** for agent identity. |
 | **Agent Manager Platform** | "Choreo agents" | Pre-GA (v0.18.x as of mid-2026). Built on OpenChoreo. |
 | **OpenChoreo** | "Choreo" (that's the SaaS; OpenChoreo is the OSS platform) | Kubernetes-native, open source. |
@@ -72,7 +73,9 @@ correct search terms for the docs:
 ### 2.2 WSO2 Integration Platform (WSO2 Integrator) — *build agents, RAG, and integrations*
 - **The core idea:** low-code **and** pro-code environment (100% parity) to build integrations and
   **AI agents** directly inside integration flows.
-- **5.0.0 (H1 2026) unified BI and MI into one "WSO2 Integrator."**
+- **5.0.0 (H1 2026) unified BI and MI into one "WSO2 Integrator."** The **default profile runs on
+  Ballerina** (this is the encouraged path, and what the GenAI docs use); the **MI profile** is still
+  available but not the recommended default. Build the AI/agent work against the GenAI docs, not MI-only docs.
 - **AI capabilities you get out of the box:**
   - **Agent framework** with **MCP support**, persistent memory, summarizing/trimming, and RAG.
   - **RAG**: knowledge bases + vector DBs (Weaviate, Milvus, Pinecone, pgvector in various profiles/tutorials),
@@ -93,7 +96,9 @@ correct search terms for the docs:
   do*, and **MCP authorization** so tool calls carry real, verifiable identity.
 - **Reach for it when:** your assistant acts on behalf of a user (login, consent, scopes), or your
   agent needs its own identity to be governed.
-- **Deploy:** on-prem cleanly. Latest IS docs: https://is.docs.wso2.com/en/latest/
+- **Deploy:** on-prem (self-managed Identity Server) or SaaS — both work; pick by your machine's
+  resources. Platform docs: https://wso2.com/identity-platform/docs/ · Latest IS docs:
+  https://is.docs.wso2.com/en/latest/
 
 ### 2.4 Agent Manager Platform — *run, observe, evaluate, secure agents at scale*
 - **The core idea:** an open control plane to **deploy agents on Kubernetes**, get **full-stack
@@ -129,7 +134,7 @@ correct search terms for the docs:
 ## 3. How the products compose (the part no single doc gives you)
 
 The judges reward **meaningful multi-product integration.** Here is the honest dependency picture so
-you compose deliberately, not randomly. Full patterns are in `composition-patterns.md`; the summary:
+you compose deliberately, not randomly.
 
 ```
                        ┌─────────────────────────────────────────────┐
@@ -163,16 +168,152 @@ you compose deliberately, not randomly. Full patterns are in `composition-patter
    hosting:                OpenChoreo (K8s)
 ```
 
-**Minimum interesting stack (2 products):** Integrator (build the agent + RAG) + API Platform AI
-Gateway (govern LLM + expose enterprise APIs as MCP tools).
+### The composition patterns (product-agnostic building blocks)
 
-**Bonus-points stack (4–5 products):** add Identity Platform (Agent ID + user login) + Agent Manager
-(host/observe/eval) + Moesif (cost dashboards). Only add a product if it does real work — judges can
-tell decoration from integration.
+These are **building blocks, not a prescribed architecture** and not tied to any industry. Pick the
+ones that fit *your* idea and combine them — most good submissions use 2–4. Each names the products
+involved, what it buys you, and the honest "why this and not just glue code" justification.
+
+**Pattern A — "Governed brain": agent + LLM Gateway.**
+Your agent never calls OpenAI/Anthropic/etc. directly; it calls the **AI Gateway's LLM Proxy**, which
+fronts one or more providers. *Buys you:* multi-provider routing + failover, **token-based rate
+limiting** (cap runaway spend), **semantic caching** (repeat questions don't re-bill), and
+**guardrails** (PII masking, prompt-injection protection, content safety) applied centrally. *Products:*
+API Platform (AI Gateway / LLM Proxy); optionally → Moesif for cost dashboards. *DIY vs. WSO2:* DIY means
+writing your own retry/failover, a token accountant, a cache layer, and prompt/response scrubbing per
+provider. The gateway makes it config.
+
+**Pattern B — "Hands": enterprise APIs → MCP tools.**
+The **MCP Gateway auto-generates MCP tools from your REST APIs' OpenAPI specs**; your agent discovers and
+calls those tools over MCP — with auth, rate limits, and an audit trail — without you writing an MCP
+server. *Buys you:* the agent can *act* against real systems, every action authenticated and logged. This
+is the difference between a chatbot that talks and an assistant that does things. *Products:* API Platform
+(MCP Gateway); pairs naturally with Pattern A (LLM decides, MCP acts). *DIY vs. WSO2:* DIY means
+hand-writing and hosting an MCP server per API plus your own authz/throttling/logging on tool calls.
+
+**Pattern C — "Memory & grounding": RAG inside the Integrator.**
+Build a RAG pipeline in **WSO2 Integrator**: ingest → chunk → embed → store in a vector DB
+(Weaviate/Milvus/Pinecone per profile) → at query time retrieve + feed the LLM via the RAG Chat
+capability; add persistent conversation memory. *Buys you:* grounded, source-cited answers instead of
+hallucinated ones; the assistant knows *your* domain content, and memory makes multi-turn coherent.
+*Products:* Integration Platform (agent framework, RAG, memory); optionally send LLM calls through Pattern
+A's gateway. *DIY vs. WSO2:* DIY means wiring an embedding pipeline, vector store client, retrieval step,
+and prompt assembly by hand. Integrator gives you mediators/operations for each step.
+
+**Pattern D — "Who are you, and what may you do": identity for users *and* agents.**
+Users authenticate via **Identity Platform** (OAuth2/OIDC); the **agent itself gets an identity via Agent
+ID**, and tool calls carry verifiable identity so you can authorize *what the agent is allowed to do* —
+enforced at tool-execution time. *Buys you:* consent and scopes for user-facing actions, plus the genuinely
+interesting governance story — an autonomous agent as a first-class, authorizable principal, not an
+anonymous script with a shared key. *Products:* Identity Platform (Agent ID, MCP authorization); Integrator
+has built-in Agent ID integration; API Platform gateways enforce the tokens. *DIY vs. WSO2:* DIY means a
+login stack plus inventing your own scheme for "which agent is this and is it allowed."
+
+**Pattern E — "Watch and grade": observability + evals.**
+Run/observe your agent through the **Agent Manager Platform**: OpenTelemetry traces, metrics, logs;
+auto-instrumentation; and **evals** (assertions or LLM-as-judge). WSO2 Integrator also has a built-in LLM
+evaluation framework and an Agent Execution Visualizer. *Buys you:* you can *show the judges* what your
+agent actually did — which tools it called, in what order, where it went wrong — plus evidence it behaves
+correctly. Non-deterministic AI is hard to trust without this. *Products:* Agent Manager Platform (pre-GA)
+and/or Integrator's eval framework; built on OpenChoreo. *DIY vs. WSO2:* DIY means instrumenting every
+framework call and building an eval harness.
+
+**Pattern F — "Show me the money/usage": analytics via Moesif.**
+Configure the AI Gateway to emit analytics to **Moesif** (`MOESIF_KEY`): dashboards on AI cost, call
+volume, and usage patterns; optionally a monetization model. *Buys you:* a cost/usage story and a business
+angle. *Products:* Moesif (SaaS) fed by API Platform AI Gateway. *DIY vs. WSO2:* DIY means building metering
++ a dashboard.
+
+**Pattern G — "Somewhere to live": hosting on OpenChoreo.**
+Deploy your components (agent, integrations, services) on **OpenChoreo**, the Kubernetes-native platform.
+If you use Agent Manager, you're already on OpenChoreo underneath. *Buys you:* a credible production
+hosting story rather than "it runs on my laptop." *Products:* OpenChoreo.
+
+### Three honest tiers (illustrations, not templates)
+
+Your idea should drive which blocks you pick.
+
+- **Tier 1 — Real and focused (2 products).** Pattern C (RAG agent in Integrator) + Pattern A (LLM
+  Gateway). A grounded assistant with cost control and guardrails. Fully local, no SaaS required.
+- **Tier 2 — Acts on the world (3 products).** Add Pattern B (MCP tools from your APIs). Now the assistant
+  *does* things against real systems, with audit trails. This is where "Enterprise AI Assistant" starts to
+  mean something.
+- **Tier 3 — Governed, observed, agentic enterprise (4–5 products).** Add Pattern D (Agent ID + user login)
+  and Pattern E (Agent Manager observability/evals), optionally Pattern F (Moesif) and Pattern G (OpenChoreo
+  hosting). The full bonus-points play — but only if each product is doing real work in your flow.
+
+> **The judging test to apply to yourself:** for every WSO2 product in your diagram, can you delete it and
+> have your assistant still work? If yes, it's decoration — either make it load-bearing or drop it. Judges
+> reward *meaningful* integration, not logo count.
 
 ---
 
-## 4. Anti-hallucination protocol (read this to your model, and to yourself)
+## 4. Day-zero setup (get something running in the first hour)
+
+This is a **menu, not a golden path** — do only the sections your idea needs. **Both local/standalone
+and SaaS/cloud paths are valid** — pick by your machine's resources: standalone/on-prem gives full
+control and no signup; SaaS/cloud is easier if you're resource-constrained. Commands are **pinned to
+mid-2026 releases** and versions move — if a download 404s, grab the current version from the linked
+docs; never hand-edit a version into a URL and hope.
+
+**Prerequisites:** Docker + Docker Compose (≥ 8 GB RAM if running several components), Java 17+ (JVM
+runtimes), WSO2 Integrator IDE (if building agents), Node.js 18+ / Python 3.10+ (your own code), and an LLM
+provider API key — put it *behind* the AI Gateway, not in agent code.
+
+**1. API Platform — AI Gateway (LLM + MCP governance).** The **standalone** gateway (no control-plane
+signup, configured by YAML/CLI) is the simplest local start; the **control-plane-connected** mode adds
+a web UI if you prefer SaaS. Get the current commands from
+https://wso2.com/api-platform/docs/get-started/ (choose the *standalone AI gateway* quick start) and
+https://github.com/wso2/api-platform (releases).
+
+```bash
+# Illustrative — confirm the current version tag on the releases page first.
+curl -sLO https://github.com/wso2/api-platform/releases/download/gateway/v1.0.0/wso2apip-api-gateway-1.0.0.zip
+unzip wso2apip-api-gateway-1.0.0.zip
+cd wso2apip-api-gateway-1.0.0
+```
+
+Point the LLM Proxy at your provider and give your agent the gateway's endpoint. For MCP, feed it an
+OpenAPI spec and it derives tools. To emit analytics to Moesif, the gateway config takes a `MOESIF_KEY`.
+
+**2. WSO2 Integrator — build the agent / RAG / integrations.** Fastest dev loop is the WSO2 Integrator IDE
+(agent framework, RAG, Copilot) on the **Ballerina default profile**. Start from the GenAI docs, not
+MI-only docs. Docs home: https://wso2.com/integration-platform/docs/ · GenAI overview:
+https://wso2.com/integration-platform/docs/genai/overview · First AI integration tutorial:
+https://wso2.com/integration-platform/docs/genai/tutorials/it-helpdesk-chatbot
+
+**3. Identity Platform — login + Agent ID.** Runs on-prem (self-managed Identity Server) or SaaS — pick
+by resources. Configure an OAuth2/OIDC app for user login; for the agent-identity story look for
+**Agent ID** and **MCP authorization**. Add only if login/consent or agent-identity governance is part
+of your idea. Platform docs: https://wso2.com/identity-platform/docs/ · Latest IS docs:
+https://is.docs.wso2.com/en/latest/
+
+**4. Agent Manager Platform — host / observe / eval (pre-GA).** Quick-start via a Docker dev container
+(version-pinned — check the docs for the current tag):
+
+```bash
+# Illustrative — confirm current version at the docs link before running.
+docker run --rm -it --name amp-quick-start \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  --network=host \
+  ghcr.io/wso2/amp-quick-start:v0.18.0
+# then, inside the container:
+./install.sh
+```
+
+Quick start: https://wso2.github.io/agent-manager/ · Hosted console:
+https://console.agent-manager.cloud.wso2.com/ · ⚠️ **Pre-GA — expect version/commands to change.**
+
+**5. OpenChoreo — Kubernetes-native hosting (optional).** For a real hosting story, or if using Agent
+Manager (built on it), follow https://openchoreo.dev/docs/ . You'll want a local Kubernetes
+(k3d/kind/minikube) or a cluster.
+
+**6. Moesif — analytics (SaaS, optional).** Sign up, get your project API key, set it as `MOESIF_KEY` in the
+AI Gateway config (step 1). Docs: https://www.moesif.com/docs
+
+---
+
+## 5. Anti-hallucination protocol (read this to your model, and to yourself)
 
 These products are past your model's training cutoff. Enforce this behavior:
 
@@ -181,8 +322,7 @@ These products are past your model's training cutoff. Enforce this behavior:
    docs" and stop.
 2. **Product names must match Section 1 exactly.** If you catch yourself writing "API Manager" as if
    it were the whole product, or "MI" as a standalone product, correct it.
-3. **Version-gate every claim.** State the version you're assuming (e.g. "Integrator 5.0.0 / MI
-   4.6.0", "API Platform gateway v1.0.0", "Agent Manager v0.18.x"). If the user is on a different
+3. **Version-gate every claim.** State the version you're assuming (e.g. "API Platform gateway v1.0.0", "Agent Manager v0.18.x"). If the user is on a different
    version, flag that the details may differ.
 4. **Prefer `latest` docs URLs** (URLs containing `/latest/`) and the canonical domains:
    `wso2.com/*/docs`, `*.docs.wso2.com`, `wso2.github.io/agent-manager`, `openchoreo.dev/docs`,
@@ -193,7 +333,7 @@ These products are past your model's training cutoff. Enforce this behavior:
 
 ---
 
-## 5. Fast links index (give these to your model as the source of truth)
+## 6. Fast links index (give these to your model as the source of truth)
 
 **API Platform**
 - Overview & get-started: https://wso2.com/api-platform/docs/get-started/
@@ -202,12 +342,14 @@ These products are past your model's training cutoff. Enforce this behavior:
 - MCP Gateway get-started: https://wso2.com/api-platform/docs/ai-gateway/1.1.0/mcp-proxy/quick-start-guide/
 - GitHub: https://github.com/wso2/api-platform
 
-**Integration Platform / WSO2 Integrator**
+**Integration Platform / WSO2 Integrator** (Ballerina default profile — use the GenAI docs)
 - Docs home: https://wso2.com/integration-platform/docs/
-- Build first AI integration (chatbot → KB → RAG → agent): https://wso2.com/integration-platform/docs/genai/tutorials/it-helpdesk-chatbot
+- GenAI overview (start here): https://wso2.com/integration-platform/docs/genai/overview
+- First AI integration tutorial (chatbot → KB → RAG → agent): https://wso2.com/integration-platform/docs/genai/tutorials/it-helpdesk-chatbot
 - 5.0.0 release notes: https://wso2.com/library/blogs/wso2-integrator-5-0-0-release/
 
 **Identity Platform**
+- Platform docs: https://wso2.com/identity-platform/docs/
 - IS (latest): https://is.docs.wso2.com/en/latest/
 - Agent ID example: https://is.docs.wso2.com/en/latest/quick-starts/agent-auth-py/
 
@@ -223,7 +365,7 @@ These products are past your model's training cutoff. Enforce this behavior:
 
 ---
 
-## 6. A good first prompt to your AI coding tool
+## 7. A good first prompt to your AI coding tool
 
 > "I'm building an Enterprise AI Assistant for the WSO2 hackathon. I've loaded the WSO2 AI Context
 > Pack. Before writing any WSO2 config or code, confirm the product names and versions you'll target
